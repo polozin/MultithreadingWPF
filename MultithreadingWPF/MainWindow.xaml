@@ -1,0 +1,21 @@
+﻿<Window x:Class="MultithreadingWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MultithreadingWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800">
+    <Grid Background="#FFDEDED4">
+        <TextBox x:Name="txtCountThreads" HorizontalAlignment="Left" Height="45" Margin="31,23,0,0" Text="7" TextWrapping="Wrap" VerticalAlignment="Top" Width="112" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Bold"/>
+        <Button x:Name="btnStart" Content="Start" Click="btnStart_Click" HorizontalAlignment="Left" Height="45" Margin="531,23,0,0" VerticalAlignment="Top" Width="112" FontSize="16" FontWeight="Bold"/>
+        <Button x:Name="btnStop" Content="Stop" Click="btnStop_Click" HorizontalAlignment="Left" Height="45" Margin="656,23,0,0" VerticalAlignment="Top" Width="112" FontSize="16" FontWeight="Bold" Foreground="#FFE65429"/>
+        <ScrollViewer x:Name="scrollView" VerticalScrollBarVisibility="Auto" 
+                 Height="459" 
+                 Width="736" 
+                 Margin="0,93,0,0"
+                 HorizontalScrollBarVisibility="Disabled">
+            <TextBlock x:Name="txtPayload"  Text=""  Background="White"/>
+        </ScrollViewer>
+    </Grid>
+</Window>
