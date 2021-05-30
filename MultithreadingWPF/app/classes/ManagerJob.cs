@@ -18,7 +18,6 @@ namespace ConsoleApp1.app.classes
         public static AddMessageDelegate addMessage;
         private static EventWaitHandle waitHandleStartJob = new AutoResetEvent(true);
         private static EventWaitHandle waitHandleUpdateMessage = new AutoResetEvent(true);
-        private static EventWaitHandle waitHandleMenagerUp = new AutoResetEvent(false);
         private Task manager;
         private static Hashtable listJobs = new Hashtable();
         public static StringBuilder payloadString = new StringBuilder();
@@ -30,12 +29,8 @@ namespace ConsoleApp1.app.classes
             CountJobs = countJobs;
             manager = new Task(ManagerTask);
         }
-        public void Stop()
-        {
-            trueToDO = false;
-        }
         /// <summary>
-        /// ManagerTask metod to main task named ManagerTask
+        /// ManagerTask method to main task named ManagerTask
         /// 1. Create work tasks. 
         /// 2. Read from queue buffer and run external code (addMessage()) to update data.
         /// 3. Waiting for the end of work all tasks.
@@ -75,10 +70,17 @@ namespace ConsoleApp1.app.classes
             addMessage();
             payloadString.Clear();
         }
+        /// <summary>
+        /// ToDoJob method to  tasks TaskJob
+        /// 1. To start job waiting to find job in class 'waitHandleStartJob.WaitOne();' first task(thread) into 
+        /// 2. job(sleep)
+        /// 3. white to update data 'waitHandleUpdateMessage.WaitOne();'
+        /// </summary>
         private static void ToDoJob()
         {
             do
             {
+                // First task enter to code. The others are waiting.
                 waitHandleStartJob.WaitOne();
                 TaskJob jobStarted = null;
                 if (listJobs.ContainsKey(Task.CurrentId))
@@ -90,8 +92,13 @@ namespace ConsoleApp1.app.classes
                     break;
                 }
                 jobStarted.Counter++;
+                // First task switch waitHandleStartJob to enter next thread.
                 waitHandleStartJob.Set();
+
+                // Job (all tasks sleep time is defined in the constructor) 
                 Thread.Sleep(jobStarted.TimeSpan);
+
+                // Task which woke up first enter to code 
                 waitHandleUpdateMessage.WaitOne();
                 TaskJob jobFinish = null;
                 if (listJobs.ContainsKey(Task.CurrentId))
@@ -105,6 +112,8 @@ namespace ConsoleApp1.app.classes
 
                 DateTime date = DateTime.Now;
                 buffer.Enqueue( string.Format("job number {0,3} completed job in {1:HH:mm:ss.fff} after {2,4} miliseconds (total {3,8}).", Task.CurrentId, date, jobFinish.TimeSpan, jobFinish.TotalTime));
+
+                //Task switch waitHandleUpdateMessage to next task.
                 waitHandleUpdateMessage.Set();
             } while (trueToDO);
             CountJobs--;
@@ -113,5 +122,11 @@ namespace ConsoleApp1.app.classes
         {
             this.manager.Start();
         }
+        public void Stop()
+        {
+            // boolen var trueToDO = false  => means stop infinite loop for TaskJob tasks
+            trueToDO = false;
+        }
+
     }
 }

@@ -48,8 +48,8 @@ namespace MultithreadingWPF
                 }
                 else
                 {
-                    this.txtPayload.Text = "";
                     managerJob = new ManagerJob(count);
+                    // Add reference to external method to update data
                     ManagerJob.addMessage += AddMessageToPayload;
                     managerJob.Start();
                     btnStart.IsEnabled = false;
